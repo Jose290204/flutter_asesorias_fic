@@ -1,5 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:prueba_proyecto_asesorias/values/colores.dart';
+import 'package:prueba_proyecto_asesorias/shared/core/colores.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -75,6 +77,16 @@ class FormularioLogin extends StatefulWidget {
 class _FormularioLoginState extends State<FormularioLogin> {
   final _formKey = GlobalKey<FormState>();
 
+  final cuenta = TextEditingController();
+  final nip = TextEditingController();
+
+  @override
+  void dispose(){
+    nip.dispose();
+    cuenta.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -85,15 +97,17 @@ class _FormularioLoginState extends State<FormularioLogin> {
             labelTexto: 'No. Cuenta',
             icon: Icons.person,
             colorIcon: Appcolores.amarilloUas,
+            campoController: cuenta,
           ),
           SizedBox(height: 15),
           InputStyle(
             labelTexto: 'NiP',
             icon: Icons.lock,
             colorIcon: Appcolores.azulUas,
+            campoController: nip,
           ),
           SizedBox(height: 30),
-          BotonIngresar(formKey: _formKey),
+          BotonIngresar(formKey: _formKey, cuentaController: cuenta, nipController: nip,),
         ],
       ),
     );
@@ -103,12 +117,19 @@ class _FormularioLoginState extends State<FormularioLogin> {
 //Estilo y funcion de verificacion del boton
 
 class BotonIngresar extends StatelessWidget {
+
+  final TextEditingController cuentaController;
+  final TextEditingController nipController;
+
   const BotonIngresar({
     super.key,
     required GlobalKey<FormState> formKey,
-  }) : _formKey = formKey;
+    required this.cuentaController,
+    required this.nipController,
+  }): _formKey = formKey;
 
-  final GlobalKey<FormState> _formKey;
+  final GlobalKey<FormState>_formKey;
+
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +147,19 @@ class BotonIngresar extends StatelessWidget {
       ),
     
       onPressed: () {
-        if (_formKey.currentState!.validate()) {
+
+        String inputCuenta = cuentaController.text;
+        String inputNip = nipController.text;
+        
+        if (_formKey.currentState!.validate() && inputCuenta == '12345' && inputNip == '1234') {
+
+          log('Cuenta: ${cuentaController.text}');
+          log('NIP: ${nipController.text}');
+
+          
+
+          Navigator.pushReplacementNamed(context, '/asesoriasEnCurso');
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Prosesando la informacion')),
           );
@@ -143,17 +176,20 @@ class InputStyle extends StatelessWidget {
   final String labelTexto;
   final IconData icon;
   final Color colorIcon;
+  final TextEditingController campoController;
 
   const InputStyle({
     super.key,
     required this.labelTexto,
     required this.icon,
     required this.colorIcon,
+    required this.campoController,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: campoController,
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: colorIcon, size: 18),
         filled: true,

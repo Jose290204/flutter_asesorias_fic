@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prueba_proyecto_asesorias/Screen/Login/login_screen.dart';
+import 'package:prueba_proyecto_asesorias/mobile/routes/app_routes.dart';
 
 
 void main() => runApp(const MyApp());
@@ -12,7 +12,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      home: LoginScreen(),
+      initialRoute: AppRoutes.initialRoute,
+      routes: AppRoutes.routes,
     );
   }
 }
